@@ -25,7 +25,7 @@
 .landingButton {
   width: 180px;
   height: 55px;
-  font-size: 20px;
+  font-size: 16px !important;
   margin-left: 50px;
   margin-right: 50px;
 }
