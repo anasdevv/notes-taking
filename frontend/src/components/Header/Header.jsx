@@ -9,8 +9,7 @@ const Header = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse className="justify-content-end" id="basic-navbar-nav">
           <Nav>
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="mynotes">My Notes</Nav.Link>
+            <Nav.Link href="/mynotes">My Notes</Nav.Link>
             <NavDropdown title="Fahd Aleem" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">My Profile</NavDropdown.Item>
               <NavDropdown.Divider />

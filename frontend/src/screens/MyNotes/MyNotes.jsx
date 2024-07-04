@@ -5,12 +5,30 @@ import { Link } from "react-router-dom";
 import "./MyNotes.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Markdown from "react-markdown";
+
+const formatDate = (timestamp) => {
+  const date = new Date(timestamp);
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  return date.toLocaleDateString("en-US", options);
+};
 
 const MyNotes = () => {
   const [notes, setNotes] = useState(null);
-  const deleteHandler = (id) => {
+  const [error, setError] = useState(null);
+
+  const deleteHandler = async (id) => {
     if (window.confirm("Are you sure?")) {
-      console.log(id, "deleted");
+      try {
+        const response = await axios.delete(
+          "http://localhost:5000/api/notes/" + id
+        );
+        console.log(response.status, id, "deleted");
+        window.location.reload();
+      } catch (error) {
+        console.error("Error deleting note:", error);
+        setError(error.response?.data?.error || "An error occurred");
+      }
     }
   };
   const fetchNotes = async () => {
@@ -25,7 +43,7 @@ const MyNotes = () => {
   return (
     <div>
       <MainScreen title="Welcome Back Fahd Aleem">
-        <Link to="/create">
+        <Link to="/create-note">
           <Button
             size="lg"
             style={{
@@ -82,7 +100,7 @@ const MyNotes = () => {
                       <Button
                         size="sm"
                         variant="danger"
-                        className="mx-2"
+                        className="mx-3"
                         onClick={() => deleteHandler(note._id)}
                       >
                         Delete
@@ -95,9 +113,11 @@ const MyNotes = () => {
                         Category - {note.category}
                       </Badge>
                       <blockquote className="blockquote mb-0">
-                        <p>{note.content}</p>
-                        <footer className="blockquote-footer">
-                          <cite title="Source Title">Created on: date</cite>
+                        <Markdown>{note.content}</Markdown>
+                        <footer className="blockquote-footer mt-auto">
+                          <cite title="Source Title">
+                            Created on: {formatDate(note.createdAt)}
+                          </cite>
                         </footer>
                       </blockquote>
                     </Card.Body>
