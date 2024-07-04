@@ -1,23 +1,23 @@
 const express = require("express");
 const notes = require("../data/notes");
 const noteController = require("../controllers/noteController");
+const Note = require("../models/noteModel");
 
 const router = express.Router();
 
-// router.get("/", (req, res) => {
-//   res.send("API is running");
-// });
+// GET all notes
+router.get("/", noteController.getAllNotes);
 
-router.get("/", (req, res) => {
-  res.json(notes);
-});
-//router.post("/create", (req, res) => {})
+// GET single note
+router.get("/:id", noteController.getNote);
 
-router.get("/:id", (req, res) => {
-  const note = notes.find((n) => n._id === req.params.id);
-  res.send(note);
-});
+// POST a new note
+router.post("/create", noteController.createNote);
 
-//router.delete('/:id', (req, res) => {})
+// DELETE a note
+router.delete("/:id", noteController.deleteNote);
+
+// EDIT a note
+router.patch("/:id", noteController.updateNote);
 
 module.exports = router;
