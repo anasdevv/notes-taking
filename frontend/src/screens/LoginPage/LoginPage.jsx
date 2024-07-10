@@ -1,29 +1,103 @@
-import React from "react";
+import React, { useState } from "react";
 import "./LoginPage.css";
-import { Button, Container, Form } from "react-bootstrap";
+import { Alert, Button, Container, Form } from "react-bootstrap";
 import MainScreen from "../../components/MainScreen/MainScreen";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [invalidFields, setInvalidFields] = useState({});
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(null);
+
+  const navigate = useNavigate();
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    const newInvalidFields = {};
+    setError(null);
+
+    if (!email) newInvalidFields.email = true;
+    if (!password) newInvalidFields.password = true;
+
+    if (Object.keys(newInvalidFields).length > 0) {
+      setInvalidFields(newInvalidFields);
+      return;
+    }
+    setInvalidFields({});
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      setLoading(true);
+      const { data } = await axios.post(
+        "http://localhost:5000/api/users/login",
+        {
+          email,
+          password,
+        },
+        config
+      );
+      console.log(data);
+      // save the user to local storage
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      setLoading(false);
+      navigate("/mynotes");
+    } catch (error) {
+      setLoading(false);
+      if (error.response && error.response.data && error.response.data.error) {
+        setError(error.response.data.error);
+      }
+      console.log(error.response.data.error);
+    }
+  };
+
   return (
     <MainScreen title="LOGIN">
       <div className="login-container">
-        <Form>
+        <Form onSubmit={submitHandler}>
+          {error && <Alert variant="danger">{error}</Alert>}
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
-            <Form.Control type="email" placeholder="Enter email" />
+            <Form.Control
+              type="email"
+              placeholder="Enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              isInvalid={invalidFields.email}
+            />
+            <Form.Control.Feedback type="invalid">
+              Email is required.
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" />
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              isInvalid={invalidFields.password}
+            />
+            <Form.Control.Feedback type="invalid">
+              Password is required.
+            </Form.Control.Feedback>
           </Form.Group>
-          <Button variant="primary" type="submit" className="mb-2">
-            Submit
-          </Button>
-          <Form.Group>
+
+          <div className="d-flex justify-content-center mb-3 mt-4">
+            <Button className="w-100 fs-6 p-2" type="submit">
+              LOG IN
+            </Button>
+          </div>
+
+          <Form.Group className="d-flex justify-content-center">
             <Form.Text>
-              Don't have an account? <Link to="/register">Sign Up</Link>
+              Don't have an account? <Link to="/signup">Sign Up</Link>
             </Form.Text>
           </Form.Group>
         </Form>
