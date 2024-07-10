@@ -4,6 +4,7 @@ const express = require("express");
 const notes = require("./data/notes");
 const mongoose = require("mongoose");
 const noteRoutes = require("./routes/noteRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/notes", noteRoutes);
+app.use("/api/users", userRoutes);
 
 //connect to db
 mongoose
