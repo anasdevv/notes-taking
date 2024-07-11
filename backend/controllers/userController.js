@@ -14,7 +14,14 @@ const loginUser = async (req, res) => {
 
     // create a token
     const token = createToken(user._id);
-    res.status(201).json({ user, token });
+    res
+      .status(201)
+      .json({
+        email: user.email,
+        name: user.name,
+        profilePicture: user.pic,
+        token,
+      });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -29,7 +36,7 @@ const signupUser = async (req, res) => {
 
     // create a token
     const token = createToken(user._id);
-    res.status(201).json({ email, token });
+    res.status(201).json({ email, name, profilePicture, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

@@ -3,6 +3,7 @@ import "./LoginPage.css";
 import { Alert, Button, Container, Form } from "react-bootstrap";
 import MainScreen from "../../components/MainScreen/MainScreen";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../hooks/useAuthContext";
 import axios from "axios";
 
 const LoginPage = () => {
@@ -11,6 +12,7 @@ const LoginPage = () => {
   const [invalidFields, setInvalidFields] = useState({});
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(null);
+  const { dispatch } = useAuthContext();
 
   const navigate = useNavigate();
 
@@ -45,6 +47,9 @@ const LoginPage = () => {
       console.log(data);
       // save the user to local storage
       localStorage.setItem("userInfo", JSON.stringify(data));
+
+      // update the auth context
+      dispatch({ type: "LOGIN", payload: data });
       setLoading(false);
       navigate("/mynotes");
     } catch (error) {
@@ -90,7 +95,7 @@ const LoginPage = () => {
           </Form.Group>
 
           <div className="d-flex justify-content-center mb-3 mt-4">
-            <Button className="w-100 fs-6 p-2" type="submit">
+            <Button className="w-100 fs-6 p-2" type="submit" disabled={loading}>
               LOG IN
             </Button>
           </div>

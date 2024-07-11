@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import MainScreen from "../../components/MainScreen/MainScreen";
 import { Alert, Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const RegisterPage = () => {
@@ -16,11 +18,14 @@ const RegisterPage = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const { dispatch } = useAuthContext();
+  const Navigate = useNavigate();
 
   useEffect(() => {
     console.log("Profile Picture updated: ", profilePicture);
   }, [profilePicture]);
 
+  // for uploading profile picture
   const postDetails = (file) => {
     setUploading(true);
     const data = new FormData();
@@ -85,8 +90,13 @@ const RegisterPage = () => {
           config
         );
         console.log(data);
+        // save to local storage
         localStorage.setItem("userInfo", JSON.stringify(data));
+
+        // update the auth context
+        dispatch({ type: "LOGIN", payload: data });
         setLoading(false);
+        Navigate("/mynotes");
       } catch (error) {
         setLoading(false);
         if (
