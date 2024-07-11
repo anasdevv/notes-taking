@@ -6,6 +6,7 @@ import "./MyNotes.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Markdown from "react-markdown";
+import { useAuthContext } from "../../hooks/useAuthContext.jsx";
 
 const formatDate = (timestamp) => {
   const date = new Date(timestamp);
@@ -16,6 +17,7 @@ const formatDate = (timestamp) => {
 const MyNotes = () => {
   const [notes, setNotes] = useState(null);
   const [error, setError] = useState(null);
+  const { user } = useAuthContext();
 
   const deleteHandler = async (id) => {
     if (window.confirm("Are you sure?")) {
@@ -42,7 +44,7 @@ const MyNotes = () => {
 
   return (
     <div>
-      <MainScreen title="Welcome Back Fahd Aleem">
+      <MainScreen title={`Welcome Back ${user.name}`}>
         <Link to="/create-note">
           <Button
             size="lg"
