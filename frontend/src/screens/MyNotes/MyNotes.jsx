@@ -23,7 +23,12 @@ const MyNotes = () => {
     if (window.confirm("Are you sure?")) {
       try {
         const response = await axios.delete(
-          "http://localhost:5000/api/notes/" + id
+          "http://localhost:5000/api/notes/" + id,
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
         );
         console.log(response.status, id, "deleted");
         window.location.reload();
@@ -34,13 +39,19 @@ const MyNotes = () => {
     }
   };
   const fetchNotes = async () => {
-    const { data } = await axios.get("http://localhost:5000/api/notes");
+    const { data } = await axios.get("http://localhost:5000/api/notes", {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
     setNotes(data);
   };
 
   useEffect(() => {
-    fetchNotes();
-  }, []);
+    if (user) {
+      fetchNotes();
+    }
+  }, [user]);
 
   return (
     <div>

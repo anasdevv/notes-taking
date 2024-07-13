@@ -19,14 +19,14 @@ const Header = () => {
               <Nav.Link href="/mynotes">My Notes</Nav.Link>
 
               <NavDropdown title={user.name} id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">
+                <NavDropdown.Item href="/myprofile">
                   My Profile
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item
                   onClick={() => {
                     logout();
-                    navigate("/");
+                    navigate("/login");
                   }}
                 >
                   Logout

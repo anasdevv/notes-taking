@@ -4,6 +4,7 @@ import { Button, Card, Form } from "react-bootstrap";
 import Markdown from "react-markdown";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const EditNote = () => {
   const { id } = useParams();
@@ -13,13 +14,23 @@ const EditNote = () => {
   const [error, setError] = useState(null);
   const [validationError, setValidationError] = useState("");
   const [invalidFields, setInvalidFields] = useState({});
+  const { user } = useAuthContext();
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!user) {
+      return;
+    }
+
     const getData = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/notes/${id}`
+          `http://localhost:5000/api/notes/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
         );
         setTitle(data.title);
         setContent(data.content);
@@ -30,7 +41,7 @@ const EditNote = () => {
       }
     };
     getData();
-  }, [id]);
+  }, [id, user]);
 
   const resetHandler = () => {
     setTitle("");
@@ -59,7 +70,12 @@ const EditNote = () => {
     try {
       const response = await axios.patch(
         `http://localhost:5000/api/notes/${id}`,
-        note
+        note,
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
       );
       console.log(response.status, "Note Updated", note);
       resetHandler();

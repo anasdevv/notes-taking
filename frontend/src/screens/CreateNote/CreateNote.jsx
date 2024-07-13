@@ -4,6 +4,7 @@ import MainScreen from "../../components/MainScreen/MainScreen";
 import { Button, Card, Form } from "react-bootstrap";
 import Markdown from "react-markdown";
 import axios from "axios";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const CreateNote = () => {
   const [title, setTitle] = useState("");
@@ -12,6 +13,7 @@ const CreateNote = () => {
   const [error, setError] = useState(null);
   const [invalidFields, setInvalidFields] = useState({});
   const [validationError, setValidationError] = useState("");
+  const { user } = useAuthContext();
 
   const navigate = useNavigate();
 
@@ -23,6 +25,12 @@ const CreateNote = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!user) {
+      setError("You must be logged in");
+      return;
+    }
+
     const newInvalidFields = {};
 
     if (!title) newInvalidFields.title = true;
@@ -41,7 +49,12 @@ const CreateNote = () => {
     try {
       const response = await axios.post(
         "http://localhost:5000/api/notes/create",
-        note
+        note,
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
       );
       console.log(response.status, "New Note Added", note);
       resetHandler();
