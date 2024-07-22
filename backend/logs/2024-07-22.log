@@ -1,0 +1,37 @@
+{"level":30,"time":1721679902584,"pid":22820,"hostname":"DESKTOP-LSFOT8K","msg":"connected to db and listening on port 5000"}
+{"level":50,"time":1721679910321,"pid":22820,"hostname":"DESKTOP-LSFOT8K","msg":"Login failed for fahd@test.com: Incorrect username or password"}
+{"level":30,"time":1721679912599,"pid":22820,"hostname":"DESKTOP-LSFOT8K","msg":"User logged in: fahd@test.com"}
+{"level":30,"time":1721679912617,"pid":22820,"hostname":"DESKTOP-LSFOT8K","msg":"669108afd931085e700435c8 Authorized"}
+{"level":30,"time":1721679912670,"pid":22820,"hostname":"DESKTOP-LSFOT8K","msg":"Fetching all notes for user 669108afd931085e700435c8"}
+{"level":30,"time":1721679912724,"pid":22820,"hostname":"DESKTOP-LSFOT8K","msg":"Fetched 1 notes for user 669108afd931085e700435c8"}
+{"level":30,"time":1721679946365,"pid":22820,"hostname":"DESKTOP-LSFOT8K","msg":"669108afd931085e700435c8 Authorized"}
+{"level":30,"time":1721679946417,"pid":22820,"hostname":"DESKTOP-LSFOT8K","msg":"User 669108afd931085e700435c8 is creating a note"}
+{"level":30,"time":1721679946481,"pid":22820,"hostname":"DESKTOP-LSFOT8K","msg":"Note created with ID: 669ec04a0d5188a5e956b752"}
+{"level":30,"time":1721679946493,"pid":22820,"hostname":"DESKTOP-LSFOT8K","msg":"669108afd931085e700435c8 Authorized"}
+{"level":30,"time":1721679946545,"pid":22820,"hostname":"DESKTOP-LSFOT8K","msg":"Fetching all notes for user 669108afd931085e700435c8"}
+{"level":30,"time":1721679946597,"pid":22820,"hostname":"DESKTOP-LSFOT8K","msg":"Fetched 2 notes for user 669108afd931085e700435c8"}
+{"level":30,"time":1721680043890,"pid":12604,"hostname":"DESKTOP-LSFOT8K","msg":"connected to db and listening on port 5000"}
+{"level":30,"time":1721680049041,"pid":12604,"hostname":"DESKTOP-LSFOT8K","msg":"669108afd931085e700435c8 Authorized"}
+{"level":30,"time":1721680049102,"pid":12604,"hostname":"DESKTOP-LSFOT8K","msg":"Fetching all notes for user 669108afd931085e700435c8"}
+{"level":30,"time":1721680049156,"pid":12604,"hostname":"DESKTOP-LSFOT8K","msg":"Fetched 2 notes for user 669108afd931085e700435c8"}
+{"level":30,"time":1721680060903,"pid":8300,"hostname":"DESKTOP-LSFOT8K","msg":"connected to db and listening on port 5000"}
+{"level":30,"time":1721680105861,"pid":8300,"hostname":"DESKTOP-LSFOT8K","msg":"669108afd931085e700435c8 Authorized"}
+{"level":30,"time":1721680105922,"pid":8300,"hostname":"DESKTOP-LSFOT8K","msg":"Fetching note with id 669ec04a0d5188a5e956b752"}
+{"level":30,"time":1721680105975,"pid":8300,"hostname":"DESKTOP-LSFOT8K","msg":"Fetched note with id 669ec04a0d5188a5e956b752"}
+{"level":30,"time":1721680123763,"pid":8300,"hostname":"DESKTOP-LSFOT8K","msg":"669108afd931085e700435c8 Authorized"}
+{"level":30,"time":1721680123816,"pid":8300,"hostname":"DESKTOP-LSFOT8K","msg":"Updating note with id 669ec04a0d5188a5e956b752"}
+{"level":30,"time":1721680123877,"pid":8300,"hostname":"DESKTOP-LSFOT8K","msg":"Updated note with id 669ec04a0d5188a5e956b752"}
+{"level":30,"time":1721680123889,"pid":8300,"hostname":"DESKTOP-LSFOT8K","msg":"669108afd931085e700435c8 Authorized"}
+{"level":30,"time":1721680123942,"pid":8300,"hostname":"DESKTOP-LSFOT8K","msg":"Fetching all notes for user 669108afd931085e700435c8"}
+{"level":30,"time":1721680123995,"pid":8300,"hostname":"DESKTOP-LSFOT8K","msg":"Fetched 2 notes for user 669108afd931085e700435c8"}
+{"level":30,"time":1721680217955,"pid":14996,"hostname":"DESKTOP-LSFOT8K","msg":"connected to db and listening on port 5000"}
+{"level":30,"time":1721680331527,"pid":14996,"hostname":"DESKTOP-LSFOT8K","msg":"669108afd931085e700435c8 Authorized"}
+{"level":30,"time":1721680331588,"pid":14996,"hostname":"DESKTOP-LSFOT8K","msg":"Fetching all notes for user 669108afd931085e700435c8"}
+{"level":30,"time":1721680331642,"pid":14996,"hostname":"DESKTOP-LSFOT8K","msg":"Fetched 2 notes for user 669108afd931085e700435c8"}
+{"level":30,"time":1721680395602,"pid":14996,"hostname":"DESKTOP-LSFOT8K","msg":"669108afd931085e700435c8 Authorized"}
+{"level":30,"time":1721680395782,"pid":14996,"hostname":"DESKTOP-LSFOT8K","msg":"User info updated: fahd@test.com"}
+{"level":30,"time":1721680402037,"pid":14996,"hostname":"DESKTOP-LSFOT8K","msg":"669108afd931085e700435c8 Authorized"}
+{"level":30,"time":1721680402090,"pid":14996,"hostname":"DESKTOP-LSFOT8K","msg":"Fetching all notes for user 669108afd931085e700435c8"}
+{"level":30,"time":1721680402142,"pid":14996,"hostname":"DESKTOP-LSFOT8K","msg":"Fetched 2 notes for user 669108afd931085e700435c8"}
+{"level":30,"time":1721680551498,"pid":14996,"hostname":"DESKTOP-LSFOT8K","msg":"669108afd931085e700435c8 Authorized"}
+{"level":30,"time":1721680551668,"pid":14996,"hostname":"DESKTOP-LSFOT8K","msg":"User info updated: fahd@test.com"}
