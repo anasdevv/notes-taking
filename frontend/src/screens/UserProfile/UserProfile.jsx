@@ -90,7 +90,7 @@ const UserProfile = () => {
               <Card.Body>
                 <Image
                   src={`${profilePicture}`}
-                  roundedCircle
+                  rounded
                   thumbnail
                   className="profile-picture mb-3"
                 />
