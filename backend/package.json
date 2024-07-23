@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js | npx pino-pretty"
+    "start": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",
