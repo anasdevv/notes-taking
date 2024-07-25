@@ -20,7 +20,7 @@ app.use(cors(corsOptions));
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("API is running");
+  res.status(200).send({ message: "API is running" });
 });
 
 app.use("/api/notes", noteRoutes);
@@ -37,3 +37,5 @@ mongoose
   .catch((error) => {
     logger.error(error);
   });
+
+module.exports = app;
