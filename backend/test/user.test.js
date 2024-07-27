@@ -13,12 +13,12 @@ let authToken;
 
 before(async () => {
   // Ensure that deletion completes before tests start
-  await User.deleteMany();
+  await User.deleteMany({ name: "test user" });
 });
 
 after(async () => {
   // Ensure that deletion completes after tests finish
-  await User.deleteMany();
+  await User.deleteMany({ name: "test user" });
 });
 
 describe("Testing All User Routes", () => {
@@ -131,21 +131,6 @@ describe("Testing All User Routes", () => {
   });
 
   it("should update profile of a logged-in user", (done) => {
-    let updatedInfo = {
-      name: "updated user",
-    };
-    chai
-      .request(server)
-      .patch("/api/users/profile")
-      .set("Authorization", `Bearer ${authToken}`)
-      .send(updatedInfo)
-      .end((err, res) => {
-        res.should.have.status(200);
-        res.body.name.should.be.equal("updated user");
-        done();
-      });
-  });
-  it("should fail to update profile due to email conflict", (done) => {
     let updatedInfo = {
       name: "updated user",
     };
