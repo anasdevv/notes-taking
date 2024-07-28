@@ -4,6 +4,7 @@
 /node_modules
 node_modules/
 frontend/node_modules
+backend/logs
 /.pnp
 .pnp.js
 
@@ -17,8 +18,8 @@ frontend/node_modules
 .DS_Store
 .env
 .env.local
-.env.development.local
-.env.test.local
+.development.env
+.test.env
 .env.production.local
 
 npm-debug.log*

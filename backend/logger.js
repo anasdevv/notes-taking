@@ -13,6 +13,8 @@ if (!fs.existsSync(logsDir)) {
 const timestamp = new Date().toISOString().split("T")[0]; // Format YYYY-MM-DD
 const logFilePath = path.join(logsDir, `${timestamp}.log`);
 
+const logLevel = process.env.NODE_ENV === "test" ? "silent" : "info";
+
 // Create the logger with multiple transports
 const logger = pino({
   transport: {
@@ -20,12 +22,12 @@ const logger = pino({
       {
         target: "pino-pretty",
         options: { colorize: true },
-        level: "info", // Adjust the log level as needed
+        level: logLevel, // Adjust the log level as needed
       },
       {
         target: "pino/file",
         options: { destination: logFilePath },
-        level: "info", // Adjust the log level as needed
+        level: logLevel, // Adjust the log level as needed
       },
     ],
   },

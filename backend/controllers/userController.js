@@ -19,7 +19,7 @@ const loginUser = async (req, res) => {
     const token = createToken(user._id);
     logger.info(`User logged in: ${email}`);
 
-    res.status(201).json({
+    res.status(200).json({
       email: user.email,
       name: user.name,
       profilePicture: user.pic,
