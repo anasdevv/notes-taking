@@ -3,11 +3,14 @@ process.env.NODE_ENV = "test";
 const User = require("../models/userModel");
 const chai = require("chai");
 const expect = chai.expect;
-const should = chai.should();
 const chaiHttp = require("chai-http");
 const server = require("../server");
 
 chai.use(chaiHttp);
+
+const SIGNUP_ROUTE = process.env.SIGNUP_ROUTE;
+const LOGIN_ROUTE = process.env.LOGIN_ROUTE;
+const PROFILE_ROUTE = process.env.PROFILE_ROUTE;
 
 let authToken;
 
@@ -43,7 +46,7 @@ describe("Testing All User Routes", () => {
     };
     chai
       .request(server)
-      .post("/api/users/signup")
+      .post(SIGNUP_ROUTE)
       .send(user)
       .end((err, res) => {
         res.should.have.status(201);
@@ -59,7 +62,7 @@ describe("Testing All User Routes", () => {
     };
     chai
       .request(server)
-      .post("/api/users/signup")
+      .post(SIGNUP_ROUTE)
       .send(user)
       .end((err, res) => {
         res.should.have.status(400);
@@ -75,7 +78,7 @@ describe("Testing All User Routes", () => {
     };
     chai
       .request(server)
-      .post("/api/users/signup")
+      .post(SIGNUP_ROUTE)
       .send(user)
       .end((err, res) => {
         res.should.have.status(400);
@@ -90,7 +93,7 @@ describe("Testing All User Routes", () => {
     };
     chai
       .request(server)
-      .post("/api/users/login")
+      .post(LOGIN_ROUTE)
       .send(user)
       .end((err, res) => {
         res.should.have.status(200);
@@ -107,7 +110,7 @@ describe("Testing All User Routes", () => {
     };
     chai
       .request(server)
-      .post("/api/users/login")
+      .post(LOGIN_ROUTE)
       .send(user)
       .end((err, res) => {
         res.should.have.status(400);
@@ -122,7 +125,7 @@ describe("Testing All User Routes", () => {
     };
     chai
       .request(server)
-      .post("/api/users/login")
+      .post(LOGIN_ROUTE)
       .send(user)
       .end((err, res) => {
         res.should.have.status(400);
@@ -136,7 +139,7 @@ describe("Testing All User Routes", () => {
     };
     chai
       .request(server)
-      .patch("/api/users/profile")
+      .patch(PROFILE_ROUTE)
       .set("Authorization", `Bearer ${authToken}`)
       .send(updatedInfo)
       .end((err, res) => {

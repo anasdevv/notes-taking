@@ -4,11 +4,15 @@ const User = require("../models/userModel");
 const Note = require("../models/noteModel");
 const chai = require("chai");
 const expect = chai.expect;
-const should = chai.should();
 const chaiHttp = require("chai-http");
 const server = require("../server");
+require("dotenv").config();
 
 chai.use(chaiHttp);
+
+const SIGNUP_ROUTE = process.env.SIGNUP_ROUTE;
+const NOTES_ROUTE = process.env.NOTES_ROUTE;
+const CREATE_NOTE_ROUTE = process.env.CREATE_NOTE_ROUTE;
 
 let authToken;
 let note_id;
@@ -21,7 +25,7 @@ before((done) => {
   };
   chai
     .request(server)
-    .post("/api/users/signup")
+    .post(SIGNUP_ROUTE)
     .send(user)
     .end((err, res) => {
       res.should.have.status(201);
@@ -56,7 +60,7 @@ describe("Testing All Note Related Routes", () => {
   it("should verify that we have 0 notes in the DB", (done) => {
     chai
       .request(server)
-      .get("/api/notes")
+      .get(NOTES_ROUTE)
       .set("Authorization", `Bearer ${authToken}`)
       .end((err, res) => {
         res.should.have.status(200);
@@ -74,7 +78,7 @@ describe("Testing All Note Related Routes", () => {
     };
     chai
       .request(server)
-      .post("/api/notes/create")
+      .post(CREATE_NOTE_ROUTE)
       .set("Authorization", `Bearer ${authToken}`)
       .send(note)
       .end((err, res) => {
@@ -87,7 +91,7 @@ describe("Testing All Note Related Routes", () => {
   it("should verify that new note was added to DB", (done) => {
     chai
       .request(server)
-      .get("/api/notes")
+      .get(NOTES_ROUTE)
       .set("Authorization", `Bearer ${authToken}`)
       .end((err, res) => {
         res.should.have.status(200);
@@ -100,7 +104,7 @@ describe("Testing All Note Related Routes", () => {
   it("should GET created note", (done) => {
     chai
       .request(server)
-      .get(`/api/notes/${note_id}`)
+      .get(`${NOTES_ROUTE}/${note_id}`)
       .set("Authorization", `Bearer ${authToken}`)
       .end((err, res) => {
         res.should.have.status(200);
@@ -117,7 +121,7 @@ describe("Testing All Note Related Routes", () => {
     };
     chai
       .request(server)
-      .patch(`/api/notes/${note_id}`)
+      .patch(`${NOTES_ROUTE}/${note_id}`)
       .set("Authorization", `Bearer ${authToken}`)
       .send(updatedNote)
       .end((err, res) => {
@@ -132,7 +136,7 @@ describe("Testing All Note Related Routes", () => {
   it("should DELETE 1 note", (done) => {
     chai
       .request(server)
-      .delete(`/api/notes/${note_id}`)
+      .delete(`${NOTES_ROUTE}/${note_id}`)
       .set("Authorization", `Bearer ${authToken}`)
       .end((err, res) => {
         res.should.have.status(200);
@@ -143,7 +147,7 @@ describe("Testing All Note Related Routes", () => {
   it("should verify that new note was deleted from DB", (done) => {
     chai
       .request(server)
-      .get("/api/notes")
+      .get(NOTES_ROUTE)
       .set("Authorization", `Bearer ${authToken}`)
       .end((err, res) => {
         res.should.have.status(200);
