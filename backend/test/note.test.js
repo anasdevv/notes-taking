@@ -6,13 +6,14 @@ const chai = require("chai");
 const expect = chai.expect;
 const chaiHttp = require("chai-http");
 const server = require("../server");
-require("dotenv").config();
+const {
+  SIGNUP_ROUTE,
+  NOTES_ROUTE,
+  CREATE_NOTE_ROUTE,
+} = require("../constants");
 
 chai.use(chaiHttp);
-
-const SIGNUP_ROUTE = process.env.SIGNUP_ROUTE;
-const NOTES_ROUTE = process.env.NOTES_ROUTE;
-const CREATE_NOTE_ROUTE = process.env.CREATE_NOTE_ROUTE;
+chai.should();
 
 let authToken;
 let note_id;
