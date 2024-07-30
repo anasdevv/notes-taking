@@ -4,6 +4,7 @@ import { Alert, Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useNavigate } from "react-router-dom";
+import { USER_ROUTES } from "../../constants/userConstants";
 import axios from "axios";
 
 const RegisterPage = () => {
@@ -12,7 +13,7 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [profilePicture, setProfilePicture] = useState(
-    "https://fontawesome.com/icons/user?f=classic&s=solid"
+    "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
   );
   const [invalidFields, setInvalidFields] = useState({});
   const [error, setError] = useState(null);
@@ -21,9 +22,7 @@ const RegisterPage = () => {
   const { dispatch } = useAuthContext();
   const Navigate = useNavigate();
 
-  useEffect(() => {
-    console.log("Profile Picture updated: ", profilePicture);
-  }, [profilePicture]);
+  useEffect(() => {}, [profilePicture]);
 
   // for uploading profile picture
   const postDetails = (file) => {
@@ -33,9 +32,7 @@ const RegisterPage = () => {
     data.append("upload_preset", "notetaker");
     data.append("cloud_name", "dq196vyns");
 
-    console.log("Starting file upload...");
-
-    fetch("https://api.cloudinary.com/v1_1/dq196vyns/image/upload", {
+    fetch(USER_ROUTES.IMAGE_UPLOAD, {
       method: "post",
       body: data,
     })
@@ -46,12 +43,11 @@ const RegisterPage = () => {
         return res.json();
       })
       .then((data) => {
-        console.log("File uploaded successfully:", data.url.toString());
         setProfilePicture(data.url.toString());
         setUploading(false);
       })
       .catch((err) => {
-        console.error("Failed to upload file:", err);
+        setError("Failed to upload file");
         setUploading(false);
       });
   };
@@ -69,6 +65,7 @@ const RegisterPage = () => {
       setInvalidFields(newInvalidFields);
       return;
     }
+
     if (password !== confirmPassword) {
       setError("Passwords do not match");
     } else {
@@ -80,7 +77,7 @@ const RegisterPage = () => {
         };
         setLoading(true);
         const { data } = await axios.post(
-          "http://localhost:5000/api/users/signup",
+          USER_ROUTES.SIGN_UP,
           {
             name,
             email,
@@ -89,7 +86,6 @@ const RegisterPage = () => {
           },
           config
         );
-        console.log(data);
         // save to local storage
         localStorage.setItem("userInfo", JSON.stringify(data));
 
@@ -106,7 +102,6 @@ const RegisterPage = () => {
         ) {
           setError(error.response.data.error);
         }
-        console.log(error.response.data.error);
       }
     }
   };
@@ -179,6 +174,7 @@ const RegisterPage = () => {
               accept=".png,.jpg,.jpeg"
               onChange={(e) => postDetails(e.target.files[0])}
               label="Upload Profile Picture"
+              data-testid="upload-pic"
             />
           </Form.Group>
 
@@ -187,6 +183,7 @@ const RegisterPage = () => {
               className="w-100 fs-6 p-2"
               type="submit"
               disabled={uploading || loading}
+              data-testid="reg-btn"
             >
               {uploading ? "Uploading..." : loading ? "Loading..." : "SIGN UP"}
             </Button>

@@ -4,6 +4,7 @@ import { Alert, Button, Container, Form } from "react-bootstrap";
 import MainScreen from "../../components/MainScreen/MainScreen";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { USER_ROUTES } from "../../constants/userConstants";
 import axios from "axios";
 
 const LoginPage = () => {
@@ -37,14 +38,13 @@ const LoginPage = () => {
       };
       setLoading(true);
       const { data } = await axios.post(
-        "http://localhost:5000/api/users/login",
+        USER_ROUTES.LOG_IN,
         {
           email,
           password,
         },
         config
       );
-      console.log(data);
       // save the user to local storage
       localStorage.setItem("userInfo", JSON.stringify(data));
 
@@ -57,7 +57,6 @@ const LoginPage = () => {
       if (error.response && error.response.data && error.response.data.error) {
         setError(error.response.data.error);
       }
-      console.log(error.response.data.error);
     }
   };
 
@@ -89,13 +88,18 @@ const LoginPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               isInvalid={invalidFields.password}
             />
-            <Form.Control.Feedback type="invalid">
+            <Form.Control.Feedback type="invalid" data-testid="pass-error">
               Password is required.
             </Form.Control.Feedback>
           </Form.Group>
 
           <div className="d-flex justify-content-center mb-3 mt-4">
-            <Button className="w-100 fs-6 p-2" type="submit" disabled={loading}>
+            <Button
+              className="w-100 fs-6 p-2"
+              type="submit"
+              disabled={loading}
+              data-testid="login-btn"
+            >
               LOG IN
             </Button>
           </div>
