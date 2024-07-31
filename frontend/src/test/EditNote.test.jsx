@@ -139,37 +139,4 @@ describe(EditNote, () => {
       expect(screen.getByText("My Notes Page")).toBeInTheDocument();
     });
   });
-
-  //   test("should show error message on fetch error", async () => {
-  //     axios.get.mockRejectedValueOnce({
-  //       response: { data: { error: "Fetch error" } },
-  //     });
-
-  //     render(
-  //       <AuthContextProvider>
-  //         <MemoryRouter initialEntries={["/edit-note/1"]}>
-  //           <Routes>
-  //             <Route path="/edit-note/:id" element={<EditNote />} />
-  //           </Routes>
-  //         </MemoryRouter>
-  //       </AuthContextProvider>
-  //     );
-
-  //     expect(await screen.findByText(/fetch error/i)).toBeInTheDocument();
-  //   });
-
-  //   test("should show error message on update error", async () => {
-  //     axios.patch.mockRejectedValueOnce({
-  //       response: { data: { error: "Update error" } },
-  //     });
-
-  //     renderComponent();
-
-  //     fireEvent.change(screen.getByLabelText(/title/i), {
-  //       target: { value: "Updated Note Title" },
-  //     });
-  //     fireEvent.click(screen.getByText(/update/i));
-
-  //     expect(await screen.findByText(/update error/i)).toBeInTheDocument();
-  //   });
 });
