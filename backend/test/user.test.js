@@ -7,6 +7,7 @@ const chaiHttp = require("chai-http");
 const server = require("../server");
 
 chai.use(chaiHttp);
+chai.should();
 
 const SIGNUP_ROUTE = process.env.SIGNUP_ROUTE;
 const LOGIN_ROUTE = process.env.LOGIN_ROUTE;
