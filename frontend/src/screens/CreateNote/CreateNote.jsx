@@ -5,6 +5,7 @@ import { Button, Card, Form } from "react-bootstrap";
 import Markdown from "react-markdown";
 import axios from "axios";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { NOTE_ROUTES } from "../../constants/noteConstants";
 
 const CreateNote = () => {
   const [title, setTitle] = useState("");
@@ -47,20 +48,14 @@ const CreateNote = () => {
     setInvalidFields({});
     const note = { title, content, category };
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/notes/create",
-        note,
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-      );
-      console.log(response.status, "New Note Added", note);
+      const response = await axios.post(NOTE_ROUTES.CREATE_NOTE, note, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
       resetHandler();
       navigate("/mynotes");
     } catch (error) {
-      console.error("Error creating note:", error);
       setError(error.response?.data?.error || "An error occurred");
     }
   };
