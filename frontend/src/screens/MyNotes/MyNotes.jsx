@@ -1,9 +1,8 @@
-import React from "react";
+import { React, useEffect, useState } from "react";
 import MainScreen from "../../components/MainScreen/MainScreen.jsx";
-import { Accordion, Badge, Button, Card } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Accordion, Alert, Badge, Button, Card } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import "./MyNotes.css";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import Markdown from "react-markdown";
 import { useAuthContext } from "../../hooks/useAuthContext.jsx";
@@ -24,7 +23,7 @@ const MyNotes = () => {
   const deleteHandler = async (id) => {
     if (window.confirm("Are you sure?")) {
       try {
-        const response = await axios.delete(NOTE_ROUTES.DELETE_NOTE(id), {
+        await axios.delete(NOTE_ROUTES.DELETE_NOTE(id), {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
@@ -42,7 +41,7 @@ const MyNotes = () => {
           Authorization: `Bearer ${user.token}`,
         },
       });
-      if (response && response.data) {
+      if (response?.data) {
         setNotes(response.data);
       } else {
         setError("Failed to fetch notes");
@@ -77,6 +76,7 @@ const MyNotes = () => {
           Create New Note
         </Button>
         {/* </Link> */}
+        {error && <Alert variant="danger">{error}</Alert>}
         {notes &&
           notes.map((note) => (
             <Accordion

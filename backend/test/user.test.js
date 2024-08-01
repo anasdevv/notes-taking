@@ -5,12 +5,10 @@ const chai = require("chai");
 const expect = chai.expect;
 const chaiHttp = require("chai-http");
 const server = require("../server");
+const { SIGNUP_ROUTE, LOGIN_ROUTE, PROFILE_ROUTE } = require("../constants");
 
 chai.use(chaiHttp);
-
-const SIGNUP_ROUTE = process.env.SIGNUP_ROUTE;
-const LOGIN_ROUTE = process.env.LOGIN_ROUTE;
-const PROFILE_ROUTE = process.env.PROFILE_ROUTE;
+chai.should();
 
 let authToken;
 

@@ -1,7 +1,5 @@
-import "./App.css";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
-import LandingPage from "./screens/LandingPage/LandingPage";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import MyNotes from "./screens/MyNotes/MyNotes";
 import CreateNote from "./screens/CreateNote/CreateNote";
@@ -18,7 +16,7 @@ function App() {
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<Navigate to="/login" />} />
         <Route
           path="/login"
           element={!user ? <LoginPage /> : <Navigate to="/mynotes" />}
