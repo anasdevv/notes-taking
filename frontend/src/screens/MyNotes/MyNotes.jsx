@@ -1,12 +1,13 @@
 import React from "react";
 import MainScreen from "../../components/MainScreen/MainScreen.jsx";
 import { Accordion, Badge, Button, Card } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./MyNotes.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Markdown from "react-markdown";
 import { useAuthContext } from "../../hooks/useAuthContext.jsx";
+import { NOTE_ROUTES } from "../../constants/noteConstants.jsx";
 
 const formatDate = (timestamp) => {
   const date = new Date(timestamp);
@@ -18,33 +19,37 @@ const MyNotes = () => {
   const [notes, setNotes] = useState(null);
   const [error, setError] = useState(null);
   const { user } = useAuthContext();
+  const navigate = useNavigate();
 
   const deleteHandler = async (id) => {
     if (window.confirm("Are you sure?")) {
       try {
-        const response = await axios.delete(
-          "http://localhost:5000/api/notes/" + id,
-          {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
-        );
-        console.log(response.status, id, "deleted");
+        const response = await axios.delete(NOTE_ROUTES.DELETE_NOTE(id), {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
         window.location.reload();
       } catch (error) {
-        console.error("Error deleting note:", error);
         setError(error.response?.data?.error || "An error occurred");
       }
     }
   };
   const fetchNotes = async () => {
-    const { data } = await axios.get("http://localhost:5000/api/notes", {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    });
-    setNotes(data);
+    try {
+      const response = await axios.get(NOTE_ROUTES.GET_ALL_NOTES, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      if (response && response.data) {
+        setNotes(response.data);
+      } else {
+        setError("Failed to fetch notes");
+      }
+    } catch (error) {
+      setError(error.response?.data?.error || "An error occurred");
+    }
   };
 
   useEffect(() => {
@@ -56,19 +61,22 @@ const MyNotes = () => {
   return (
     <div>
       <MainScreen title={`Welcome Back ${user.name}`}>
-        <Link to="/create-note">
-          <Button
-            size="lg"
-            style={{
-              marginLeft: 10,
-              marginBottom: 20,
-              marginTop: 0,
-              fontSize: 15,
-            }}
-          >
-            Create New Note
-          </Button>
-        </Link>
+        {/* <Link to="/create-note"> */}
+        <Button
+          onClick={() => {
+            navigate("/create-note");
+          }}
+          size="lg"
+          style={{
+            marginLeft: 10,
+            marginBottom: 20,
+            marginTop: 0,
+            fontSize: 15,
+          }}
+        >
+          Create New Note
+        </Button>
+        {/* </Link> */}
         {notes &&
           notes.map((note) => (
             <Accordion

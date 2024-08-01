@@ -5,6 +5,7 @@ import Markdown from "react-markdown";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { NOTE_ROUTES } from "../../constants/noteConstants";
 
 const EditNote = () => {
   const { id } = useParams();
@@ -24,19 +25,15 @@ const EditNote = () => {
 
     const getData = async () => {
       try {
-        const { data } = await axios.get(
-          `http://localhost:5000/api/notes/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
-        );
+        const { data } = await axios.get(NOTE_ROUTES.GET_NOTE(id), {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
         setTitle(data.title);
         setContent(data.content);
         setCategory(data.category);
       } catch (error) {
-        console.error("Error fetching the note data", error);
         setError(error.response?.data?.error || "An error occurred");
       }
     };
@@ -68,20 +65,14 @@ const EditNote = () => {
 
     const note = { title, content, category };
     try {
-      const response = await axios.patch(
-        `http://localhost:5000/api/notes/${id}`,
-        note,
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-      );
-      console.log(response.status, "Note Updated", note);
+      const response = await axios.patch(NOTE_ROUTES.UPDATE_NOTE(id), note, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
       resetHandler();
       navigate("/mynotes");
     } catch (error) {
-      console.error("Error updating note:", error);
       setError(error.response?.data?.error || "An error occurred");
     }
   };
@@ -144,7 +135,12 @@ const EditNote = () => {
             <Button className="mx-2" type="submit">
               Update
             </Button>
-            <Button href="/mynotes" variant="danger">
+            <Button
+              variant="danger"
+              onClick={() => {
+                navigate("/mynotes");
+              }}
+            >
               Cancel
             </Button>
           </Form>

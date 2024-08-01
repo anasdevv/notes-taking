@@ -108,6 +108,7 @@ const UserProfile = () => {
                     onChange={handleChange}
                     ref={hiddenFileInput}
                     style={{ display: "none" }} // Make the file input element invisible
+                    data-testid="change-pic"
                   />
                 </div>
                 <Card.Title as="h3">{user.name}</Card.Title>
