@@ -12,8 +12,6 @@ const EditNote = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
-  const [error, setError] = useState(null);
-  const [validationError, setValidationError] = useState("");
   const [invalidFields, setInvalidFields] = useState({});
   const { user } = useAuthContext();
   const navigate = useNavigate();
@@ -55,17 +53,15 @@ const EditNote = () => {
     if (!category) newInvalidFields.category = true;
 
     if (Object.keys(newInvalidFields).length > 0) {
-      setValidationError("All fields are required");
       setInvalidFields(newInvalidFields);
       return;
     }
 
-    setValidationError("");
     setInvalidFields({});
 
     const note = { title, content, category };
     try {
-      const response = await axios.patch(NOTE_ROUTES.UPDATE_NOTE(id), note, {
+      await axios.patch(NOTE_ROUTES.UPDATE_NOTE(id), note, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
@@ -128,10 +124,6 @@ const EditNote = () => {
                 Category is required.
               </Form.Control.Feedback>
             </Form.Group>
-            {/* {validationError && (
-              <div className="alert alert-danger">{validationError}</div>
-            )} */}
-            {error && <div className="alert alert-danger">{error}</div>}
             <Button className="mx-2" type="submit">
               Update
             </Button>

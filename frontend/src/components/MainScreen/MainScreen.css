@@ -10,7 +10,7 @@
 }
 
 .heading {
-  font-family: "Work Sans";
+  font-family: "Work Sans", Helvetica, Arial, Verdana, Tahoma, sans-serif;
   padding: 5px 10px;
   font-size: 50px;
   text-align: center;

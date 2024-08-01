@@ -13,7 +13,6 @@ const CreateNote = () => {
   const [category, setCategory] = useState("");
   const [error, setError] = useState(null);
   const [invalidFields, setInvalidFields] = useState({});
-  const [validationError, setValidationError] = useState("");
   const { user } = useAuthContext();
 
   const navigate = useNavigate();
@@ -39,16 +38,14 @@ const CreateNote = () => {
     if (!category) newInvalidFields.category = true;
 
     if (Object.keys(newInvalidFields).length > 0) {
-      setValidationError("All fields are required");
       setInvalidFields(newInvalidFields);
       return;
     }
 
-    setValidationError("");
     setInvalidFields({});
     const note = { title, content, category };
     try {
-      const response = await axios.post(NOTE_ROUTES.CREATE_NOTE, note, {
+      await axios.post(NOTE_ROUTES.CREATE_NOTE, note, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },

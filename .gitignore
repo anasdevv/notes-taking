@@ -9,7 +9,9 @@ backend/logs
 .pnp.js
 
 # testing
-/coverage
+/frontend/coverage
+/sonar-project.properties
+/.scannerwork
 
 # production
 /build

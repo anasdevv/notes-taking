@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import EditNote from "../screens/EditNote/EditNote";
 import "@testing-library/jest-dom";
 import { AuthContextProvider } from "../context/AuthContext";
-import { MemoryRouter, Route, Routes, Router } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import axios from "axios";
 import { NOTE_ROUTES } from "../constants/noteConstants";
 
@@ -80,7 +80,7 @@ describe(EditNote, () => {
 
     await waitFor(() => {
       expect(axios.patch).toHaveBeenCalledWith(
-        `http://localhost:5000/api/notes/1`,
+        NOTE_ROUTES.UPDATE_NOTE(1),
         {
           title: "Updated Note Title",
           content: "Updated content.",

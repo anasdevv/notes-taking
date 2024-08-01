@@ -1,10 +1,4 @@
-import {
-  fireEvent,
-  getByRole,
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import UserProfile from "../screens/UserProfile/UserProfile";
 import "@testing-library/jest-dom";
 import { AuthContextProvider } from "../context/AuthContext";
@@ -44,7 +38,7 @@ describe(UserProfile, () => {
     const name = screen.getAllByText(/mock user/i);
     expect(name.length).toBe(2);
     const email = screen.getAllByText(/mockuser@example.com/i);
-    expect(name.length).toBe(2);
+    expect(email.length).toBe(2);
     expect(screen.getByText(/30-Jul-2024/i)).toBeInTheDocument();
   });
 
