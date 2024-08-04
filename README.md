@@ -51,7 +51,7 @@ The application also includes a user profile page where users can update their p
     ```
 
 4. **Environment Variables**
-    Create a `.env` file in the `backend` directory with the following variables:
+    Create a `.development.env` file in the `backend` directory with the following variables:
     ```sh
     PORT=5000
     MONGO_URI=mongodb://localhost:27017/note-taker
