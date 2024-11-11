@@ -5,8 +5,7 @@
 trigger:
 - develop
 
-pool:
-  vmImage: 'ubuntu-latest'
+pool: TestAgent
 
 steps:
 # Step 1: Install Node.js
