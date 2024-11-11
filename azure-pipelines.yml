@@ -14,20 +14,14 @@ steps:
     versionSpec: '20.x'
   displayName: 'Install Node.js'
 
-# Step 2: Install dependencies and build the application
-- script: |
-    npm install
-    npm run build
-  displayName: 'Install dependencies and build project'
-
-# Step 3: Run backend tests with Mocha and Chai
+# Step 2: Run backend tests with Mocha and Chai
 - script: |
     cd backend
     npm install   # Install backend dependencies
     npm test      # Run backend tests (Mocha/Chai)
   displayName: 'Run backend tests with Mocha and Chai'
 
-# Step 4: Run frontend tests with Jest
+# Step 2: Run frontend tests with Jest
 - script: |
     cd frontend
     npm install   # Install frontend dependencies
