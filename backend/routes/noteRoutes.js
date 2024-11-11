@@ -1,5 +1,4 @@
 const express = require("express");
-const notes = require("../data/notes");
 const noteController = require("../controllers/noteController");
 const Note = require("../models/noteModel");
 const requireAuth = require("../middleware/requireAuth");
