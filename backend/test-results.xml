@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="2.731" tests="16" failures="0">
+  <testsuite name="Root Suite" timestamp="2024-11-26T17:17:00" tests="0" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Testing All Note Related Routes" timestamp="2024-11-26T17:17:01" tests="8" file="E:\FAST\Internship\Fahd-mern-10pshine\backend\test\note.test.js" time="0.806" failures="0">
+    <testcase name="Testing All Note Related Routes test default API welcome route" time="0.005" classname="test default API welcome route">
+    </testcase>
+    <testcase name="Testing All Note Related Routes should verify that we have 0 notes in the DB" time="0.114" classname="should verify that we have 0 notes in the DB">
+    </testcase>
+    <testcase name="Testing All Note Related Routes should POST a valid note" time="0.118" classname="should POST a valid note">
+    </testcase>
+    <testcase name="Testing All Note Related Routes should verify that new note was added to DB" time="0.109" classname="should verify that new note was added to DB">
+    </testcase>
+    <testcase name="Testing All Note Related Routes should GET created note" time="0.116" classname="should GET created note">
+    </testcase>
+    <testcase name="Testing All Note Related Routes should UPDATE note" time="0.117" classname="should UPDATE note">
+    </testcase>
+    <testcase name="Testing All Note Related Routes should DELETE 1 note" time="0.113" classname="should DELETE 1 note">
+    </testcase>
+    <testcase name="Testing All Note Related Routes should verify that new note was deleted from DB" time="0.109" classname="should verify that new note was deleted from DB">
+    </testcase>
+  </testsuite>
+  <testsuite name="Testing All User Routes" timestamp="2024-11-26T17:17:02" tests="8" file="E:\FAST\Internship\Fahd-mern-10pshine\backend\test\user.test.js" time="0.837" failures="0">
+    <testcase name="Testing All User Routes test default API welcome route" time="0.003" classname="test default API welcome route">
+    </testcase>
+    <testcase name="Testing All User Routes should create a new user" time="0.169" classname="should create a new user">
+    </testcase>
+    <testcase name="Testing All User Routes should fail registering due to email conflict" time="0.055" classname="should fail registering due to email conflict">
+    </testcase>
+    <testcase name="Testing All User Routes should fail registering due to weak password" time="0.003" classname="should fail registering due to weak password">
+    </testcase>
+    <testcase name="Testing All User Routes should login created user" time="0.113" classname="should login created user">
+    </testcase>
+    <testcase name="Testing All User Routes should fail login due to incorrect email" time="0.056" classname="should fail login due to incorrect email">
+    </testcase>
+    <testcase name="Testing All User Routes should fail login due to incorrect password" time="0.112" classname="should fail login due to incorrect password">
+    </testcase>
+    <testcase name="Testing All User Routes should update profile of a logged-in user" time="0.168" classname="should update profile of a logged-in user">
+    </testcase>
+  </testsuite>
+</testsuites>
