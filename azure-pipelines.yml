@@ -25,6 +25,7 @@ steps:
   continueOnError: false
 
 - script: |
+    cd backend
     dir
     npm run test
     dir
