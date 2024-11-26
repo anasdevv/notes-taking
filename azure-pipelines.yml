@@ -15,15 +15,18 @@ steps:
   displayName: 'Install Node.js'
 
 # Step 2: Run backend tests with Mocha and Chai
-- script: |
-    cd backend
-    npm install
-    dir
-    npm run test
-    dir
-  displayName: 'Install backend'
-  continueOnError: false
-
+# - script: |
+#     cd backend
+#     npm install
+#     dir
+#     npm run test
+#     dir
+#   displayName: 'Install backend'
+#   continueOnError: false
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDir: 'backend'
 - script: |
     cd backend
     dir
