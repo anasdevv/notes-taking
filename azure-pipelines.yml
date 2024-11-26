@@ -15,28 +15,12 @@ steps:
   displayName: 'Install Node.js'
 
 # Step 2: Run backend tests with Mocha and Chai
-# - script: |
-#     cd backend
-#     npm install
-#     dir
-#     npm run test
-#     dir
-#   displayName: 'Install backend'
-#   continueOnError: false
-# Step 2: Install dependencies using the Npm@1 task
-
-- task: Npm@1
-  inputs:
-    command: 'install'
-    workingDir: '$(Build.SourcesDirectory)/backend'
-  displayName: 'Install Backend Dependencies'
-
-# Step 3: Run backend tests with Mocha and Chai
 - script: |
     cd backend
-    npm run test
-  displayName: 'Run Backend Tests with Mocha and Chai'
+    npm install && npm test
+  displayName: 'Run backend tests with Mocha and Chai'
   continueOnError: false
+
 # Step 4: Publish backend test results
 - task: PublishTestResults@2
   inputs:
@@ -45,12 +29,20 @@ steps:
     failTaskOnFailedTests: true
     failTaskOnFailureToPublishResults: true
     failTaskOnMissingResultsFile: true
-    testRunTitle: 'Publish Test Results'
+    testRunTitle: 'Publish Backend Test Results'
 
-# # Step 2: Run frontend tests with Jest
-# - script: |
-#     cd frontend
-#     npm install
-#     npm test
-#   displayName: 'Run frontend tests with Jest'
-#   continueOnError: false
+# Step 2: Run frontend tests with Jest
+- script: |
+    cd frontend
+    npm install && npm test
+  displayName: 'Run frontend tests with Jest'
+  continueOnError: false
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/frontend/junit.xml'
+    failTaskOnFailedTests: true
+    failTaskOnFailureToPublishResults: true
+    failTaskOnMissingResultsFile: true
+    testRunTitle: 'Publish Frontend Test Results'
