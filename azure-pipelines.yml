@@ -21,9 +21,15 @@ steps:
     dir
     npm run test
     dir
-  displayName: 'Run backend tests with Mocha and Chai'
+  displayName: 'Install backend'
   continueOnError: false
 
+- script: |
+    dir
+    npm run test
+    dir
+  displayName: 'Run backend tests with Mocha and Chai'
+  continueOnError: false
 # Step 4: Publish backend test results
 - task: PublishTestResults@2
   inputs:
