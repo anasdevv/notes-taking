@@ -23,16 +23,19 @@ steps:
 #     dir
 #   displayName: 'Install backend'
 #   continueOnError: false
+# Step 2: Install dependencies using the Npm@1 task
+
 - task: Npm@1
   inputs:
     command: 'install'
-    workingDir: 'backend'
+    workingDir: '$(Build.SourcesDirectory)/backend'
+  displayName: 'Install Backend Dependencies'
+
+# Step 3: Run backend tests with Mocha and Chai
 - script: |
     cd backend
-    dir
     npm run test
-    dir
-  displayName: 'Run backend tests with Mocha and Chai'
+  displayName: 'Run Backend Tests with Mocha and Chai'
   continueOnError: false
 # Step 4: Publish backend test results
 - task: PublishTestResults@2
