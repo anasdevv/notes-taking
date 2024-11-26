@@ -17,7 +17,7 @@ steps:
 # Step 2: Run backend tests with Mocha and Chai
 - script: |
     cd backend
-    dir backend
+    dir
     npm install
     npm run test
   displayName: 'Run backend tests with Mocha and Chai'
@@ -27,8 +27,11 @@ steps:
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
-    testResultsFiles: '**/test-results.xml'
+    testResultsFiles: '**/backend/test-*.xml'
     failTaskOnFailedTests: true
+    failTaskOnFailureToPublishResults: true
+    failTaskOnMissingResultsFile: true
+    testRunTitle: 'Publish Test Results'
 
 # Step 2: Run frontend tests with Jest
 - script: |
