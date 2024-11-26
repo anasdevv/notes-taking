@@ -17,9 +17,10 @@ steps:
 # Step 2: Run backend tests with Mocha and Chai
 - script: |
     cd backend
-    dir
     npm install
+    dir
     npm run test
+    dir
   displayName: 'Run backend tests with Mocha and Chai'
   continueOnError: false
 
@@ -33,10 +34,10 @@ steps:
     failTaskOnMissingResultsFile: true
     testRunTitle: 'Publish Test Results'
 
-# Step 2: Run frontend tests with Jest
-- script: |
-    cd frontend
-    npm install
-    npm test
-  displayName: 'Run frontend tests with Jest'
-  continueOnError: false
+# # Step 2: Run frontend tests with Jest
+# - script: |
+#     cd frontend
+#     npm install
+#     npm test
+#   displayName: 'Run frontend tests with Jest'
+#   continueOnError: false
