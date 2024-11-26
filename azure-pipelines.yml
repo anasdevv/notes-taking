@@ -17,10 +17,7 @@ steps:
 # Step 2: Run backend tests with Mocha and Chai
 - script: |
     cd backend
-    npm install
-    dir
-    npm run test
-    dir
+    npm install and npm test
   displayName: 'Run backend tests with Mocha and Chai'
   continueOnError: false
 
