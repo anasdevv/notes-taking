@@ -17,7 +17,7 @@ steps:
 # Step 2: Run backend tests with Mocha and Chai
 - script: |
     cd backend
-    npm install && npm test --timeout 5000 -- --reporter spec
+    npm install && npm test --exit --timeout 5000 -- --reporter spec
   displayName: 'Run backend tests with Mocha and Chai'
   continueOnError: false
 
