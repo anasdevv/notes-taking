@@ -3,46 +3,46 @@
 # Includes steps for building, running tests, and analyzing code with SonarQube
 
 trigger:
-- develop
+  - develop
 
 pool: TestAgent
 
 steps:
-# Step 1: Install Node.js
-- task: NodeTool@0
-  inputs:
-    versionSpec: '20.x'
-  displayName: 'Install Node.js'
+  # Step 1: Install Node.js
+  - task: NodeTool@0
+    inputs:
+      versionSpec: "20.x"
+    displayName: "Install Node.js"
 
-# Step 2: Run backend tests with Mocha and Chai
-- script: |
-    cd backend
-    npm install && npm test --exit --timeout 5000 -- --reporter spec
-  displayName: 'Run backend tests with Mocha and Chai'
-  continueOnError: false
+  # Step 2: Run backend tests with Mocha and Chai
+  - script: |
+      cd backend
+      npm install && npm test -- --reporter spec
+    displayName: "Run backend tests with Mocha and Chai"
+    continueOnError: false
 
-# Step 4: Publish backend test results
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/backend/test-*.xml'
-    failTaskOnFailedTests: true
-    failTaskOnFailureToPublishResults: true
-    failTaskOnMissingResultsFile: true
-    testRunTitle: 'Publish Backend Test Results'
+  # Step 4: Publish backend test results
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: "JUnit"
+      testResultsFiles: "**/backend/test-*.xml"
+      failTaskOnFailedTests: true
+      failTaskOnFailureToPublishResults: true
+      failTaskOnMissingResultsFile: true
+      testRunTitle: "Publish Backend Test Results"
 
-# Step 2: Run frontend tests with Jest
-- script: |
-    cd frontend
-    npm install && npm test
-  displayName: 'Run frontend tests with Jest'
-  continueOnError: false
+  # Step 2: Run frontend tests with Jest
+  - script: |
+      cd frontend
+      npm install && npm test
+    displayName: "Run frontend tests with Jest"
+    continueOnError: false
 
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/frontend/junit.xml'
-    failTaskOnFailedTests: true
-    failTaskOnFailureToPublishResults: true
-    failTaskOnMissingResultsFile: true
-    testRunTitle: 'Publish Frontend Test Results'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: "JUnit"
+      testResultsFiles: "**/frontend/junit.xml"
+      failTaskOnFailedTests: true
+      failTaskOnFailureToPublishResults: true
+      failTaskOnMissingResultsFile: true
+      testRunTitle: "Publish Frontend Test Results"
