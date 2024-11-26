@@ -37,8 +37,7 @@ steps:
 # Step 2: Run frontend tests with Jest
 - script: |
     cd frontend
-    npm install
-    npm test
+    npm install && npm test
   displayName: 'Run frontend tests with Jest'
   continueOnError: false
 
