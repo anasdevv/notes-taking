@@ -20,6 +20,7 @@ steps:
     npm install
     npm test
   displayName: 'Run backend tests with Mocha and Chai'
+  continueOnError: false
 
 # Step 2: Run frontend tests with Jest
 - script: |
@@ -27,3 +28,4 @@ steps:
     npm install
     npm test
   displayName: 'Run frontend tests with Jest'
+  continueOnError: false
