@@ -17,6 +17,10 @@ steps:
   # Step 2: Run backend tests with Mocha and Chai
   - script: |
       cd backend
+      echo PORT=$(PORT) >> .env
+      echo MONGO_URI=$(MONGO_URI) >> .env
+      echo SECRET=$(SECRET) >> .env
+      dir
       npm install && npm test -- --reporter spec
     displayName: "Run backend tests with Mocha and Chai"
     continueOnError: false
