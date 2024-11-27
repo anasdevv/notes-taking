@@ -18,11 +18,12 @@ steps:
       secureFile: '.env'
     
   - script: |
+      dir %BUILD_SOURCESDIRECTORY%
       move %BUILD_SOURCESDIRECTORY%\.env %BUILD_SOURCESDIRECTORY%\backend\.env
       echo ".env file moved to backend directory"
       dir %BUILD_SOURCESDIRECTORY%\backend
     displayName: "Move .env file to backend directory"
-    
+
   # Step 2: Run backend tests with Mocha and Chai
   - script: |
       cd backend
