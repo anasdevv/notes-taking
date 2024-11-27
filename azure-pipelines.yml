@@ -17,10 +17,15 @@ steps:
     inputs:
       secureFile: '.env'
   
+  - script: |
+      echo "Checking temp directory contents"
+      dir $(Agent.TempDirectory)
+    displayName: "Verify .env file is downloaded"
+
   - task: CopyFiles@2
     inputs:
       SourceFolder: $(Agent.TempDirectory)
-      Contents: ‘**\.env’
+      Contents: ‘.env’
       TargetFolder: $(Build.SourcesDirectory)\backend
 
   # Step 2: Run backend tests with Mocha and Chai
