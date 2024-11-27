@@ -20,7 +20,8 @@ steps:
       echo PORT=$(PORT) >> .env
       echo MONGO_URI=$(MONGO_URI) >> .env
       echo SECRET=$(SECRET) >> .env
-      dir
+      echo "Contents of .env (excluding sensitive values):"
+      findstr /v "MONGO_URI SECRET" .env || grep -vE "MONGO_URI|SECRET" .env
       npm install && npm test -- --reporter spec
     displayName: "Run backend tests with Mocha and Chai"
     continueOnError: false
