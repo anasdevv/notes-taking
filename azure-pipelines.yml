@@ -16,17 +16,17 @@ steps:
   - task: DownloadSecureFile@1
     inputs:
       secureFile: '.env'
-    
-  - script: |
-      dir %BUILD_SOURCESDIRECTORY%
-      move %BUILD_SOURCESDIRECTORY%\.env %BUILD_SOURCESDIRECTORY%\backend\.env
-      echo ".env file moved to backend directory"
-      dir %BUILD_SOURCESDIRECTORY%\backend
-    displayName: "Move .env file to backend directory"
+  
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: $(Agent.TempDirectory)
+      Contents: ‘**\.env’
+      TargetFolder: $(Build.SourcesDirectory)\backend
 
   # Step 2: Run backend tests with Mocha and Chai
   - script: |
       cd backend
+      dir
       npm install && npm test -- --reporter spec
     displayName: "Run backend tests with Mocha and Chai"
     continueOnError: false
