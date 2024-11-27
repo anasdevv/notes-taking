@@ -13,19 +13,19 @@ steps:
     inputs:
       versionSpec: "20.x"
     displayName: "Install Node.js"
-
+  - task: DownloadSecureFile@1
+    inputs:
+      secureFile: '.env'
+    
+  - script: |
+      move %BUILD_SOURCESDIRECTORY%\.env %BUILD_SOURCESDIRECTORY%\backend\.env
+      echo ".env file moved to backend directory"
+      dir %BUILD_SOURCESDIRECTORY%\backend
+    displayName: "Move .env file to backend directory"
+    
   # Step 2: Run backend tests with Mocha and Chai
   - script: |
       cd backend
-      echo $(PORT)
-      echo $(MONGO_URI)
-      (
-      echo PORT=$(PORT)
-      echo MONGO_URI=$(MONGO_URI)
-      echo SECRET=$(SECRET)
-      ) > .env
-      echo "Contents of .env (excluding sensitive values):"
-      findstr /v "MONGO_URI SECRET" .env || grep -vE "MONGO_URI|SECRET" .env
       npm install && npm test -- --reporter spec
     displayName: "Run backend tests with Mocha and Chai"
     continueOnError: false
