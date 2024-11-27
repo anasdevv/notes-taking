@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --env-file=.development.env server.js",
-    "test": "cross-env NODE_ENV=test mocha --exit --reporter mocha-junit-reporter --reporter-options mochaFile=./test-results.xml"
+    "test": "cross-env NODE_ENV=test mocha --exit --reporter mocha-junit-reporter"
   },
   "author": "",
   "license": "ISC",
