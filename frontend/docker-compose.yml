@@ -1,0 +1,11 @@
+version: '3.9'
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '5173:80' # Map port 3000 on the host to port 80 in the container
+    environment:
+      - VITE_API_URL=http://localhost:3000/api # Example of setting an environment variable
+      - VITE_BASE_URL=${VITE_BASE_URL} # Example of setting an environment variable
