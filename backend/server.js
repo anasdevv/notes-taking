@@ -1,16 +1,33 @@
-require("dotenv").config();
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const noteRoutes = require("./routes/noteRoutes");
-const userRoutes = require("./routes/userRoutes");
-const logger = require("./logger");
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const noteRoutes = require('./routes/noteRoutes');
+const userRoutes = require('./routes/userRoutes');
+const logger = require('./logger');
 
 const app = express();
 
+// validation for required environment variables
+const REQUIRED_ENV_VARS = ['PORT', 'SECRET', 'MONGO_URI'];
+function validateEnvVariables() {
+  const missingVars = REQUIRED_ENV_VARS.filter(
+    (varName) => !process.env[varName]
+  );
+
+  if (missingVars.length > 0) {
+    console.error(
+      `Error: Missing required environment variables: ${missingVars.join(', ')}`
+    );
+    process.exit(1); // exit the app if validation fails
+  }
+}
+
+validateEnvVariables();
+
 // Middleware
 const corsOptions = {
-  origin: "*",
+  origin: process.env.ORIGIN ? process.env.ORIGIN : '*',
   credentials: true, // access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
@@ -19,12 +36,12 @@ app.use(express.json());
 app.use(cors(corsOptions));
 
 // Routes
-app.get("/", (req, res) => {
-  res.status(200).send({ message: "API is running" });
+app.get('/', (req, res) => {
+  res.status(200).send({ message: 'API is running' });
 });
 
-app.use("/api/notes", noteRoutes);
-app.use("/api/users", userRoutes);
+app.use('/api/notes', noteRoutes);
+app.use('/api/users', userRoutes);
 
 // Connect to DB and start server
 mongoose
@@ -36,6 +53,7 @@ mongoose
   })
   .catch((error) => {
     logger.error(error);
+    process.exit(1); // exit the app if mongodb fails to start
   });
 
 module.exports = app;
