@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="25" failures="0" errors="0" time="30.473">
+  <testsuite name="RegisterPage" errors="0" failures="0" skipped="0" timestamp="2024-11-26T18:38:33" time="15.51" tests="5">
+    <testcase classname="RegisterPage renders register page elements" name="RegisterPage renders register page elements" time="0.081">
+    </testcase>
+    <testcase classname="RegisterPage validates form inputs" name="RegisterPage validates form inputs" time="0.047">
+    </testcase>
+    <testcase classname="RegisterPage Renders passwords do not match error" name="RegisterPage Renders passwords do not match error" time="0.053">
+    </testcase>
+    <testcase classname="RegisterPage successful registration" name="RegisterPage successful registration" time="0.057">
+    </testcase>
+    <testcase classname="RegisterPage Uploads profile picture" name="RegisterPage Uploads profile picture" time="0.032">
+    </testcase>
+  </testsuite>
+  <testsuite name="UserProfile" errors="0" failures="0" skipped="0" timestamp="2024-11-26T18:38:33" time="15.726" tests="3">
+    <testcase classname="UserProfile Renders user profile page" name="UserProfile Renders user profile page" time="0.205">
+    </testcase>
+    <testcase classname="UserProfile Uploads and updates profile picture" name="UserProfile Uploads and updates profile picture" time="0.052">
+    </testcase>
+    <testcase classname="UserProfile Displays image upload error" name="UserProfile Displays image upload error" time="0.046">
+    </testcase>
+  </testsuite>
+  <testsuite name="LoginPage" errors="0" failures="0" skipped="0" timestamp="2024-11-26T18:38:33" time="15.726" tests="4">
+    <testcase classname="LoginPage renders Login Page" name="LoginPage renders Login Page" time="0.172">
+    </testcase>
+    <testcase classname="LoginPage should show validation messages when fields are empty" name="LoginPage should show validation messages when fields are empty" time="0.044">
+    </testcase>
+    <testcase classname="LoginPage shows an error message on failed login" name="LoginPage shows an error message on failed login" time="0.075">
+    </testcase>
+    <testcase classname="LoginPage successful login" name="LoginPage successful login" time="0.045">
+    </testcase>
+  </testsuite>
+  <testsuite name="MyNotes" errors="0" failures="0" skipped="0" timestamp="2024-11-26T18:38:33" time="15.742" tests="3">
+    <testcase classname="MyNotes should render MyNotes homepage" name="MyNotes should render MyNotes homepage" time="0.213">
+    </testcase>
+    <testcase classname="MyNotes creates new note button navigates to create note page" name="MyNotes creates new note button navigates to create note page" time="0.019">
+    </testcase>
+    <testcase classname="MyNotes should delete a note" name="MyNotes should delete a note" time="0.051">
+    </testcase>
+  </testsuite>
+  <testsuite name="EditNote" errors="0" failures="0" skipped="0" timestamp="2024-11-26T18:38:33" time="15.798" tests="5">
+    <testcase classname="EditNote should render EditNote page and fetch note data" name="EditNote should render EditNote page and fetch note data" time="0.138">
+    </testcase>
+    <testcase classname="EditNote should handle form submission and update note" name="EditNote should handle form submission and update note" time="0.114">
+    </testcase>
+    <testcase classname="EditNote should show validation messages when fields are empty" name="EditNote should show validation messages when fields are empty" time="0.043">
+    </testcase>
+    <testcase classname="EditNote should update Markdown preview when content is entered" name="EditNote should update Markdown preview when content is entered" time="0.042">
+    </testcase>
+    <testcase classname="EditNote should handle cancel button click" name="EditNote should handle cancel button click" time="0.009">
+    </testcase>
+  </testsuite>
+  <testsuite name="CreateNote" errors="0" failures="0" skipped="0" timestamp="2024-11-26T18:38:33" time="15.817" tests="5">
+    <testcase classname="CreateNote should render CreateNote page" name="CreateNote should render CreateNote page" time="0.189">
+    </testcase>
+    <testcase classname="CreateNote should show validation messages when fields are empty" name="CreateNote should show validation messages when fields are empty" time="0.045">
+    </testcase>
+    <testcase classname="CreateNote should handle cancel button click" name="CreateNote should handle cancel button click" time="0.035">
+    </testcase>
+    <testcase classname="CreateNote should create a note and navigate to /mynotes" name="CreateNote should create a note and navigate to /mynotes" time="0.056">
+    </testcase>
+    <testcase classname="CreateNote should update Markdown preview when content is entered" name="CreateNote should update Markdown preview when content is entered" time="0.057">
+    </testcase>
+  </testsuite>
+</testsuites>

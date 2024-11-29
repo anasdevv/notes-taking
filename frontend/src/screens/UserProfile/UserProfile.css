@@ -1,0 +1,29 @@
+.profile-container {
+  margin-top: 30px;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.profile-row {
+  padding: 5px 0;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.profile-row:last-child {
+  border-bottom: none;
+}
+
+.profile-label {
+  font-weight: bold;
+  color: #666;
+  text-align: right;
+}
+
+.profile-value {
+  text-align: left;
+  color: #333;
+}
