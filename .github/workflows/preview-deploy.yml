@@ -136,7 +136,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🚀 Preview available at: http://my-frontend-preview-bucket.s3-website-us-west-2.amazonaws.com/pr-${{ github.event.number }}/`
+              body: `🚀 Preview available at: ${{ env.PREVIEW_URL }}`
             })
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
