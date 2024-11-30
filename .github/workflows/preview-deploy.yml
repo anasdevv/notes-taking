@@ -119,8 +119,8 @@ jobs:
       - name: Build frontend
         run: |
           cd frontend
+          echo "VITE_BASE_PATH=/pr-${{ github.event.number }}" > .env
           npm run build
-
       - name: Deploy frontend to S3 (Preview)
         run: |
           aws s3 sync ./frontend/dist s3://my-frontend-preview-bucket/pr-${{ github.event.number }}/ --delete
