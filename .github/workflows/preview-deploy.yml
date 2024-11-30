@@ -3,10 +3,12 @@ name: Preview Deployment
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+
 permissions:
   contents: read
   pull-requests: write
   issues: write
+
 jobs:
   run-tests:
     runs-on: ubuntu-latest
@@ -44,13 +46,7 @@ jobs:
           cd backend
           echo "PORT=${{ secrets.PORT }}" > .env
           echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
-          echo "TEST_MONGO_URI=${{ secrets.TEST_MONGO_URI }}" >> .env
           echo "SECRET=${{ secrets.SECRET }}" >> .env
-
-      # - name: Run backend tests
-      #   run: |
-      #     cd backend
-      #     npm test
 
   deploy-backend:
     needs: run-tests
@@ -60,11 +56,12 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Log in to Amazon ECR
-        run: |
-          aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO_URL }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO_URL }}
 
       - name: Build Docker image
         run: |
@@ -76,26 +73,33 @@ jobs:
           docker tag backend-preview:${{ github.event.number }} ${{ secrets.ECR_REPO_URL }}:pr-${{ github.event.number }}
           docker push ${{ secrets.ECR_REPO_URL }}:pr-${{ github.event.number }}
 
-      - name: Deploy Backend to ECS (or another service)
-        run: |
-          # Replace with ECS or container service deployment commands
-          echo "Deploying backend to ECS..."
+      - name: Deploy Backend to ECS
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          PORT: 5000
-          MONGO_URI: ${{ secrets.MONGO_URI }}
-          SECRET: ${{ secrets.SECRET }}
-
-      - name: Get Backend URL
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          ECS_CLUSTER_NAME: ${{ secrets.ECS_CLUSTER_NAME }}
+          ECS_SERVICE_NAME: ${{ secrets.ECS_SERVICE_NAME }}
         run: |
-          # Assuming ECS or a Load Balancer, fetch URL dynamically
-          # Replace this with your actual URL retrieval logic
-          BACKEND_URL="http://backend-preview-${{ github.event.number }}.my-ecs-url.com"
-          echo "BACKEND_URL=${BACKEND_URL}" >> $GITHUB_ENV
+          aws ecs update-service \
+            --cluster $ECS_CLUSTER_NAME \
+            --service $ECS_SERVICE_NAME \
+            --force-new-deployment \
+            --region $AWS_REGION
+
+      - name: Get Backend Public URL from ECS
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          ECS_CLUSTER_NAME: ${{ secrets.ECS_CLUSTER_NAME }}
+          ECS_SERVICE_NAME: ${{ secrets.ECS_SERVICE_NAME }}
+        run: |
+          TASK_ARN=$(aws ecs list-tasks --cluster $ECS_CLUSTER_NAME --service-name $ECS_SERVICE_NAME --region $AWS_REGION --query "taskArns[0]" --output text)
+          ENI_ID=$(aws ecs describe-tasks --cluster $ECS_CLUSTER_NAME --tasks $TASK_ARN --region $AWS_REGION --query "tasks[0].attachments[0].details[?name=='networkInterfaceId'].value" --output text)
+          BACKEND_URL=$(aws ec2 describe-network-interfaces --network-interface-ids $ENI_ID --region $AWS_REGION --query "NetworkInterfaces[0].Association.PublicIp" --output text)
+          echo "BACKEND_URL=http://$BACKEND_URL:5000" >> $GITHUB_ENV
 
   deploy-frontend:
-    needs: [run-tests, deploy-backend]
+    needs: deploy-backend
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -116,11 +120,9 @@ jobs:
           cd frontend
           echo "VITE_BASE_URL=${{ env.BACKEND_URL }}" > .env
 
-      - name: Deploy Preview to Vercel
+      - name: Deploy to Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         run: |
           cd frontend
           vercel pull --yes --environment=preview --token=$VERCEL_TOKEN

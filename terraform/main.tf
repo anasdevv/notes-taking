@@ -2,6 +2,42 @@ provider "aws" {
   region = "us-west-2"
 }
 
+
+# Security Group to allow inbound traffic from the internet
+resource "aws_security_group" "ecs_service_sg" {
+  name        = "ecs-service-sg"
+  description = "Allow HTTP traffic to ECS service"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description = "Allow HTTP from anywhere"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Allow traffic from any IP
+  }
+
+  ingress {
+    description = "Allow HTTPS from anywhere"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Allow traffic from any IP
+  }
+
+  egress {
+    description = "Allow all outbound traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "ECS Service Security Group"
+  }
+}
+
 # ECS Cluster for Backend
 resource "aws_ecs_cluster" "backend_cluster" {
   name = "my-backend-cluster"
@@ -89,6 +125,7 @@ resource "aws_ecs_service" "backend_service" {
 
   network_configuration {
     subnets          = aws_subnet.public_subnets[*].id
+    security_groups  = [aws_security_group.ecs_service_sg.id]
     assign_public_ip = true
   }
 }
