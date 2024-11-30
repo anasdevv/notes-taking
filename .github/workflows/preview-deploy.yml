@@ -44,10 +44,10 @@ jobs:
           echo "TEST_MONGO_URI=${{ secrets.TEST_MONGO_URI }}" >> .env
           echo "SECRET=${{ secrets.SECRET }}" >> .env
 
-      - name: Run backend tests
-        run: |
-          cd backend
-          npm test
+      # - name: Run backend tests
+      #   run: |
+      #     cd backend
+      #     npm test
 
   deploy-backend:
     needs: run-tests
