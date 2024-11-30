@@ -2,72 +2,6 @@ provider "aws" {
   region = "us-west-2"
 }
 
-# S3 Bucket for Frontend (Production)
-resource "aws_s3_bucket" "frontend_bucket" {
-  bucket = "my-frontend-prod-bucket"
-}
-
-resource "aws_s3_bucket_ownership_controls" "frontend_bucket_ownership" {
-  bucket = aws_s3_bucket.frontend_bucket.id
-  rule {
-    object_ownership = "BucketOwnerEnforced"
-  }
-}
-
-resource "aws_s3_bucket_public_access_block" "frontend_bucket_public_access" {
-  bucket = aws_s3_bucket.frontend_bucket.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
-
-# S3 Bucket for Frontend (Preview)
-resource "aws_s3_bucket" "frontend_preview_bucket" {
-  bucket = "my-frontend-preview-bucket"
-}
-
-# Enable Static Website Hosting for Preview Bucket
-resource "aws_s3_bucket_website_configuration" "frontend_preview_bucket_website" {
-  bucket = aws_s3_bucket.frontend_preview_bucket.id
-
-  index_document {
-    suffix = "index.html"
-  }
-
-  error_document {
-    key = "404.html"
-  }
-}
-
-# Update the Public Access Block to allow public policies
-resource "aws_s3_bucket_public_access_block" "frontend_preview_bucket_public_access" {
-  bucket = aws_s3_bucket.frontend_preview_bucket.id
-
-  block_public_acls       = true
-  ignore_public_acls      = true
-  block_public_policy     = false  # Allow bucket policies to be public
-  restrict_public_buckets = false  # Ensure bucket can be publicly accessible
-}
-
-# Bucket Policy for Public Read Access
-resource "aws_s3_bucket_policy" "frontend_preview_bucket_policy" {
-  bucket = aws_s3_bucket.frontend_preview_bucket.id
-
-  policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Principal": "*",
-        "Action": "s3:GetObject",
-        "Resource": "${aws_s3_bucket.frontend_preview_bucket.arn}/*"
-      }
-    ]
-  })
-}
-
 # ECS Cluster for Backend
 resource "aws_ecs_cluster" "backend_cluster" {
   name = "my-backend-cluster"
@@ -76,27 +10,115 @@ resource "aws_ecs_cluster" "backend_cluster" {
 # ECR Repository for Backend Images
 resource "aws_ecr_repository" "backend_repo" {
   name = "my-backend-repo"
+  
+  image_tag_mutability = "MUTABLE"
+  
+  image_scanning_configuration {
+    scan_on_push = true
+  }
 }
 
-# Optional: IAM Role for ECS Task Execution (if needed)
+# VPC and Networking (Basic Example)
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+  
+  tags = {
+    Name = "Main VPC"
+  }
+}
+
+# Public Subnets
+resource "aws_subnet" "public_subnets" {
+  count             = 2
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.${count.index + 1}.0/24"
+  availability_zone = "us-west-2${count.index == 0 ? "a" : "b"}"
+  
+  tags = {
+    Name = "Public Subnet ${count.index + 1}"
+  }
+}
+
+# ECS Task Definition
+resource "aws_ecs_task_definition" "backend_task" {
+  family                   = "backend-task"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = 256
+  memory                   = 512
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+
+  container_definitions = jsonencode([{
+    name  = "backend-container"
+    image = "${aws_ecr_repository.backend_repo.repository_url}:latest"
+    portMappings = [{
+      containerPort = 5000
+      hostPort      = 5000
+    }]
+    environment = [
+      {
+        name  = "PORT"
+        value = "5000"
+      },
+      {
+        name  = "NODE_ENV"
+        value = "production"
+      }
+    ]
+    secrets = [
+      {
+        name      = "MONGO_URI"
+        valueFrom = "arn:aws:secretsmanager:us-west-2:YOUR_ACCOUNT_ID:secret:MONGO_URI"
+      },
+      {
+        name      = "SECRET"
+        valueFrom = "arn:aws:secretsmanager:us-west-2:YOUR_ACCOUNT_ID:secret:SECRET"
+      }
+    ]
+  }])
+}
+
+# ECS Service
+resource "aws_ecs_service" "backend_service" {
+  name            = "backend-service"
+  cluster         = aws_ecs_cluster.backend_cluster.id
+  task_definition = aws_ecs_task_definition.backend_task.arn
+  launch_type     = "FARGATE"
+
+  desired_count = 2
+
+  network_configuration {
+    subnets          = aws_subnet.public_subnets[*].id
+    assign_public_ip = true
+  }
+}
+
+# IAM Role for ECS Task Execution
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "ecsTaskExecutionRole"
 
   assume_role_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    Version = "2012-10-17"
+    Statement = [
       {
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "ecs-tasks.amazonaws.com"
-        },
-        "Action": "sts:AssumeRole"
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
       }
     ]
   })
 }
 
+# Attach necessary policies to ECS Task Execution Role
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+# Optional: CloudWatch Log Group for ECS
+resource "aws_cloudwatch_log_group" "backend_logs" {
+  name              = "/ecs/backend-logs"
+  retention_in_days = 30
 }

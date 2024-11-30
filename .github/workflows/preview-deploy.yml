@@ -116,17 +116,17 @@ jobs:
           cd frontend
           echo "VITE_BASE_URL=${{ env.BACKEND_URL }}" > .env
 
-      - name: Build frontend
+      - name: Deploy Preview to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         run: |
           cd frontend
-          echo "VITE_BASE_PATH=/pr-${{ github.event.number }}" > .env
-          npm run build
-      - name: Deploy frontend to S3 (Preview)
-        run: |
-          aws s3 sync ./frontend/dist s3://my-frontend-preview-bucket/pr-${{ github.event.number }}/ --delete
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
+          vercel build --token=$VERCEL_TOKEN
+          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=$VERCEL_TOKEN)
+          echo "PREVIEW_URL=$DEPLOYMENT_URL" >> $GITHUB_ENV
 
       - name: Post preview link in PR comment
         uses: actions/github-script@v6
