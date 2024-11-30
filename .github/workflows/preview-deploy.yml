@@ -4,6 +4,11 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   run-tests:
     runs-on: ubuntu-latest
@@ -22,7 +27,9 @@ jobs:
           npm install
 
       - name: Run frontend tests
-        run: npm test
+        run: |
+          cd frontend
+          npm test
 
       - name: Set up Node.js (Backend tests)
         uses: actions/setup-node@v3
@@ -33,15 +40,13 @@ jobs:
         run: |
           cd backend
           npm install
-     - name: Create Backend .env file
-       run: |
+
+      - name: Create Backend .env file
+        run: |
           cd backend
           echo "PORT=${{ secrets.PORT }}" > .env
           echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
-          echo "TEST_MONGO_URI=${{ secrets.TEST_MONGO_URI }}" >> .env
           echo "SECRET=${{ secrets.SECRET }}" >> .env
-     - name: Run backend tests
-       run: npm test
 
   deploy-backend:
     needs: run-tests
@@ -50,19 +55,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # - name: Create Backend .env file
-      #   run: |
-      #     cd backend
-      #     echo "PORT=5000" > .env
-      #     echo "MONGO_URI=mongodb+srv://fahdaleem256:Password1234@cluster0.ry3joob.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0" >> .env
-      #     echo "SECRET=1|Y+=2ioF5ggYIMEsYxuTJv$R_&T" >> .env
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Log in to Amazon ECR
         run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO_URL }}
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
+          docker login --username AWS --password-stdin ${{ secrets.ECR_REPO_URL }}
 
       - name: Build Docker image
         run: |
@@ -71,29 +74,50 @@ jobs:
 
       - name: Push Docker image to ECR
         run: |
-          docker tag backend-preview:${{ github.event.number }} ${{ secrets.ECR_REPO_URL }}:pr-${{ github.event.number }}
+          docker tag backend-preview:${{ github.event.number }} \
+            ${{ secrets.ECR_REPO_URL }}:pr-${{ github.event.number }}
           docker push ${{ secrets.ECR_REPO_URL }}:pr-${{ github.event.number }}
 
-      - name: Deploy Backend to ECS (or another service)
+      - name: Deploy Backend to ECS
         run: |
-          # Replace with ECS or container service deployment commands
-          echo "Deploying backend to ECS..."
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          PORT: 5000
-          MONGO_URI: ${{ secrets.MONGO_URI }}
-          SECRET: ${{ secrets.SECRET }}
+          aws ecs update-service \
+            --cluster ${{ secrets.ECS_CLUSTER_NAME }} \
+            --service ${{ secrets.ECS_SERVICE_NAME }} \
+            --force-new-deployment \
+            --region ${{ secrets.AWS_REGION }}
 
-      - name: Get Backend URL
+      - name: Get Backend Public URL from ECS
+        id: get-backend-url
         run: |
-          # Assuming ECS or a Load Balancer, fetch URL dynamically
-          # Replace this with your actual URL retrieval logic
-          BACKEND_URL="http://backend-preview-${{ github.event.number }}.my-ecs-url.com"
-          echo "BACKEND_URL=${BACKEND_URL}" >> $GITHUB_ENV
+          TASK_ARN=$(aws ecs list-tasks \
+            --cluster ${{ secrets.ECS_CLUSTER_NAME }} \
+            --service-name ${{ secrets.ECS_SERVICE_NAME }} \
+            --region ${{ secrets.AWS_REGION }} \
+            --query "taskArns[0]" \
+            --output text)
+
+          if [ -n "$TASK_ARN" ]; then
+            ENI_ID=$(aws ecs describe-tasks \
+              --cluster ${{ secrets.ECS_CLUSTER_NAME }} \
+              --tasks $TASK_ARN \
+              --region ${{ secrets.AWS_REGION }} \
+              --query "tasks[0].attachments[0].details[?name=='networkInterfaceId'].value" \
+              --output text)
+            
+            BACKEND_URL=$(aws ec2 describe-network-interfaces \
+              --network-interface-ids $ENI_ID \
+              --region ${{ secrets.AWS_REGION }} \
+              --query "NetworkInterfaces[0].Association.PublicIp" \
+              --output text)
+            
+            echo "backend_url=http://$BACKEND_URL:5000" >> $GITHUB_OUTPUT
+          else
+            echo "No tasks found for the service"
+            exit 1
+          fi
 
   deploy-frontend:
-    needs: [run-tests, deploy-backend]
+    needs: deploy-backend
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -112,19 +136,18 @@ jobs:
       - name: Inject Backend URL into .env
         run: |
           cd frontend
-          echo "VITE_BASE_URL=${{ env.BACKEND_URL }}" > .env
+          echo "VITE_BASE_URL=${{ steps.get-backend-url.outputs.backend_url }}" > .env
 
-      - name: Build frontend
+      - name: Deploy to Vercel
+        id: deploy-to-vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           cd frontend
-          npm run build
-
-      - name: Deploy frontend to S3 (Preview)
-        run: |
-          aws s3 sync ./frontend/dist s3://my-frontend-preview-bucket/pr-${{ github.event.number }}/ --delete
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
+          vercel build --token=$VERCEL_TOKEN
+          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=$VERCEL_TOKEN)
+          echo "preview_url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
 
       - name: Post preview link in PR comment
         uses: actions/github-script@v6
@@ -134,7 +157,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🚀 Preview available at: http://my-frontend-preview-bucket.s3-website-us-east-1.amazonaws.com/pr-${{ github.event.number }}/`
+              body: `🚀 Preview available at: ${{ steps.deploy-to-vercel.outputs.preview_url }}`
             })
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
